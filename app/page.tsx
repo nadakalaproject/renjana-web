@@ -43,6 +43,22 @@ export default function Home() {
     video.muted = !video.muted;
   };
 
+  // Fungsi khusus untuk mengaktifkan Picture-in-Picture
+  const togglePiP = async (videoId: string) => {
+    const video = document.getElementById(videoId) as HTMLVideoElement;
+    if (!video) return;
+
+    try {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      } else if (document.pictureInPictureEnabled) {
+        await video.requestPictureInPicture();
+      }
+    } catch (error) {
+      console.error("Gagal membuka Picture-in-Picture:", error);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-black font-sans">
 
@@ -72,12 +88,10 @@ export default function Home() {
       <section className="w-full bg-white text-black py-16 md:py-24 px-6 md:px-12 relative z-20 flex flex-col items-center">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full mb-12 md:mb-16">
 
-          {/* Bagian Kiri: Judul & Logo */}
           <div className="lg:col-span-5 flex flex-col items-center text-center gsap-fade-up">
             <h3 className="text-3xl md:text-5xl font-black uppercase tracking-widest text-neutral-900 leading-tight mb-6 whitespace-nowrap">
               TENTANG
             </h3>
-
 
             <div className="relative w-40 md:w-48 aspect-square overflow-hidden rounded-xl bg-neutral-100 border border-neutral-200">
               <Image
@@ -89,7 +103,6 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Bagian Kanan: Teks & Sosial Media */}
           <div className="lg:col-span-6 lg:col-start-7 flex flex-col justify-start lg:pt-12 gsap-fade-up">
             <p className="text-neutral-700 text-sm md:text-base leading-relaxed mb-4 text-justify">
               Renjana Studio adalah wadah kreatif yang berfokus pada eksplorasi audio dan visual. Kami hadir untuk menerjemahkan ide dan emosi ke dalam karya nyata, mulai dari produksi musik—seperti pembuatan lagu, meracik <i>beat</i>, proses rekaman, hingga tahap mixing.
@@ -98,7 +111,6 @@ export default function Home() {
               Di lini visual, kami mengeksekusi produksi foto dan <i>editing</i> baik itu foto wisuda, foto pre-wedding, foto brand, dan juga desain, tak hanya itu kami juga melayani produksi video, meliputi video musik, konten kreatif, dan berbagai medium visual lainnya. Lebih dari sekadar studio, Renjana juga menghadirkan identitas gaya melalui karya desain dan lini <i>merchandise</i> eksklusif kami.
             </p>
 
-            {/* Tombol Sosial Media */}
             <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full">
               <Link href="https://www.instagram.com/renjana_renjana/" target="_blank" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-full border border-black/20 hover:bg-black hover:text-white transition-all duration-300 text-xs font-bold text-neutral-800 uppercase tracking-wider truncate">
                 <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" /></svg>
@@ -116,7 +128,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Kutipan Tambahan */}
         <div className="w-full text-center gsap-fade-up">
           <p className="font-bold italic text-lg md:text-xl text-neutral-900 tracking-wide">
             "Dari Adonara dan sekarang di Yogyakarta"
@@ -136,36 +147,76 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          {/* MUSIC PRODUCTION */}
           <div className="gsap-fade-up bg-[#0a0a0a] border border-white/5 p-8 rounded-2xl hover:border-[#C5A880]/30 transition-colors duration-500 flex flex-col">
             <h4 className="text-xl font-bold uppercase tracking-wider mb-3 text-white">Music Production</h4>
             <p className="text-neutral-400 text-sm leading-relaxed mb-6 flex-grow">
               Pembuatan lagu, beat, recording, hingga proses mixing untuk memperkuat emosi dan nyawa dari setiap karya suara.
             </p>
             <div className="w-full aspect-video bg-neutral-900 rounded-xl overflow-hidden border border-white/5 relative mb-6 group">
-              <video autoPlay loop muted playsInline onClick={toggleMute} title="Klik untuk menyalakan/mematikan suara" className="w-full h-full object-cover cursor-pointer">
-                <source src="/videos/musik.mp4" type="video/mp4" />
+              <video 
+                id="video-music"
+                autoPlay 
+                loop 
+                muted 
+                playsInline 
+                onClick={toggleMute} 
+                title="Klik untuk menyalakan/mematikan suara" 
+                className="w-full h-full object-cover cursor-pointer"
+              >
+                <source src="/videos/musik1.mp4" type="video/mp4" />
               </video>
+              
+              {/* Tombol PiP */}
+              <button
+                onClick={() => togglePiP("video-music")}
+                className="absolute top-3 right-3 bg-black/70 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-md border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 hover:bg-[#c8a15e] hover:text-black"
+                title="Putar Melayang (Picture-in-Picture)"
+              >
+                Zoom
+              </button>
             </div>
             <Link href="/audio" className="mt-auto block w-full py-3.5 text-center bg-white/5 border border-white/10 text-white font-medium text-sm rounded-full hover:bg-[#C5A880] hover:text-black hover:border-[#C5A880] transition-all duration-300">
               Jelajahi Musik
             </Link>
           </div>
 
+          {/* VIDEO & VISUAL */}
           <div className="gsap-fade-up bg-[#0a0a0a] border border-white/5 p-8 rounded-2xl hover:border-[#C5A880]/30 transition-colors duration-500 flex flex-col">
             <h4 className="text-xl font-bold uppercase tracking-wider mb-3 text-white">Video & Visual</h4>
             <p className="text-neutral-400 text-sm leading-relaxed mb-6 flex-grow">
               Editing foto, pembuatan video musik, hingga konten kreatif. Kami merangkai momen menjadi cerita yang hidup.
             </p>
             <div className="w-full aspect-video bg-neutral-900 rounded-xl overflow-hidden border border-white/5 relative mb-6 group">
-              <video autoPlay loop muted playsInline onClick={toggleMute} title="Klik untuk menyalakan/mematikan suara" className="w-full h-full object-cover cursor-pointer">
-                <source src="/videos/video.mp4" type="video/mp4" />
+              <video 
+                id="video-visual"
+                autoPlay 
+                loop 
+                muted 
+                playsInline 
+                onClick={toggleMute} 
+                title="Klik untuk menyalakan/mematikan suara" 
+                className="w-full h-full object-cover cursor-pointer"
+              >
+                <source src="/videos/video1.mp4" type="video/mp4" />
               </video>
+
+              {/* Tombol PiP */}
+              <button
+                onClick={() => togglePiP("video-visual")}
+                className="absolute top-3 right-3 bg-black/70 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-md border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 hover:bg-[#c8a15e] hover:text-black"
+                title="Putar Melayang (Picture-in-Picture)"
+              >
+                Zoom
+              </button>
             </div>
             <Link href="/visual" className="mt-auto block w-full py-3.5 text-center bg-white/5 border border-white/10 text-white font-medium text-sm rounded-full hover:bg-[#C5A880] hover:text-black hover:border-[#C5A880] transition-all duration-300">
               Lihat Karya Visual
             </Link>
           </div>
 
+          {/* MERCHANDISE */}
           <div className="gsap-fade-up bg-[#0a0a0a] border border-white/5 p-8 rounded-2xl hover:border-[#C5A880]/30 transition-colors duration-500 flex flex-col">
             <h4 className="text-xl font-bold uppercase tracking-wider mb-3 text-white">Merchandise</h4>
             <p className="text-neutral-400 text-sm leading-relaxed mb-6 flex-grow">
@@ -183,6 +234,7 @@ export default function Home() {
               Katalog Merchandise
             </Link>
           </div>
+
         </div>
       </section>
 
@@ -197,7 +249,6 @@ export default function Home() {
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
-            {/* Tombol WhatsApp */}
             <Link 
               href="https://wa.me/6285259380736" 
               target="_blank" 
@@ -207,7 +258,6 @@ export default function Home() {
               Hubungi (WA)
             </Link>
             
-            {/* Tombol Email */}
             <Link 
               href="mailto:renjanahouse1@gmail.com"
               className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-white/5 border border-white/20 text-white rounded-full font-bold uppercase tracking-wider text-sm hover:bg-white hover:text-black hover:scale-105 transition-all duration-300"
