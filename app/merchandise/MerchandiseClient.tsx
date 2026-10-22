@@ -173,24 +173,34 @@ export default function MerchandiseClient({ sanityMerchKatalog }: { sanityMerchK
           )}
         </div>
 
-        {/* SECTION CALL TO ACTION WA */}
-        <div className="bg-neutral-900/80 border border-white/10 rounded-2xl p-10 md:p-16 text-center flex flex-col items-center justify-center gsap-fade">
-          <h2 className="text-3xl md:text-4xl font-bold text-[#c8a15e] mb-4">
-            Apakah Anda berminat membeli merchandise kami?
-          </h2>
-          <p className="text-neutral-400 max-w-xl mb-8 leading-relaxed">
-            Pesan sekarang melalui WhatsApp resmi kami. Tim kami siap memberikan informasi detail mengenai produk, pembayaran, dan pengiriman.
-          </p>
-          <a 
-            href={getWaLink()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-8 py-3 bg-[#c8a15e] text-[#0a0a0a] font-bold rounded-full hover:bg-white hover:text-black transition-colors inline-flex items-center gap-2"
-          >
-            Pesan Sekarang via WA
-          </a>
-        </div>
+      {/* SECTION CALL TO ACTION WA */}
+      <section className="py-10 px-6 md:px-12 max-w-5xl mx-auto mb-10">
+        <div className="gsap-fade bg-neutral-900/60 border border-white/5 p-8 md:p-16 rounded-[2.5rem] text-center hover:border-[#C5A880]/30 transition-all duration-700 relative overflow-hidden mt-10">
+          {/* Latar Belakang Dekoratif CTA */}
+          <div className="absolute -top-32 -left-32 w-64 h-64 bg-[#c8a15e]/10 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-[#c8a15e]/10 rounded-full blur-3xl pointer-events-none"></div>
 
+          <div className="relative z-10">
+            <h2 className="text-2xl md:text-4xl font-black uppercase tracking-wider mb-6 text-[#c8a15e]">
+              Apakah Anda berminat?
+            </h2>
+            <p className="text-neutral-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed mb-10">
+              Pesan sekarang melalui WhatsApp resmi kami. Tim kami siap memberikan informasi detail mengenai produk, pembayaran, dan pengiriman.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
+              <a 
+                href={getWaLink()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-[#c8a15e] text-black rounded-full font-bold uppercase tracking-wider text-sm hover:bg-white transition-all duration-300 shadow-lg shadow-[#c8a15e]/20"
+              >
+                Pesan Sekarang via WA
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
       </div>
 
       {/* MODAL DETAIL PRODUK */}
