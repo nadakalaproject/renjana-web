@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Montserrat } from "next/font/google";
-import { Suspense } from "react"; // 1. Tambah import Suspense dari React
+import { Suspense } from "react"; 
 import "./globals.css";
 import SmoothScroll from "../components/SmoothScroll";
 import Navbar from "../components/Navbar";

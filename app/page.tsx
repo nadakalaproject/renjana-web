@@ -253,7 +253,7 @@ export default function Home() {
           <div className="gsap-fade-up bg-[#0a0a0a] border border-white/5 p-8 rounded-2xl hover:border-[#C5A880]/30 transition-colors duration-500 flex flex-col">
             <h4 className="text-xl font-bold uppercase tracking-wider mb-3 text-white">Merchandise</h4>
             <p className="text-neutral-400 text-sm leading-relaxed mb-6 flex-grow">
-              Desain katalog dan lini pakaian eksklusif yang merepresentasikan identitas gaya Renjana.
+              Desain katalog dan produk eksklusif yang merepresentasikan identitas gaya Renjana.
             </p>
             <div className="w-full aspect-video rounded-xl relative group mb-6">
               <div className="absolute top-0 right-0 w-[70%] h-[90%] rounded-xl overflow-hidden border border-white/10 z-0 group-hover:-translate-y-2 group-hover:translate-x-2 transition-transform duration-500">
