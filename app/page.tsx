@@ -8,30 +8,45 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { client } from "@/sanity/lib/client";
 
 export default function Home() {
-  // 1. State untuk 1 karya terbaru
+  // 1. State untuk Sneak Peek (1 karya) dan Galeri Berjalan (Semua Karya)
   const [latestWork, setLatestWork] = useState<any>(null);
+  const [allWorks, setAllWorks] = useState<any[]>([]);
 
   // 2. Fetcher Sanity
   useEffect(() => {
-    const fetchLatestWork = async () => {
+    const fetchData = async () => {
       try {
-        // Mengambil 1 data paling baru ([0])
-        const query = `*[_type in ["audio", "visual"]] | order(_createdAt desc)[0] {
+        // Mengambil 1 data paling baru untuk Sneak Peek
+        const queryLatest = `*[_type in ["audio", "visual"]] | order(_createdAt desc)[0] {
+          _id,
+          _type,
+          title,
+          "imageUrl": coverImage.asset->url
+        }`;
+        
+        // Mengambil 16 data terbaru untuk Galeri Berjalan
+        const queryAll = `*[_type in ["audio", "visual"]] | order(_createdAt desc)[0...16] {
           _id,
           _type,
           title,
           "imageUrl": coverImage.asset->url
         }`;
 
-        const data = await client.fetch(query);
-        setLatestWork(data);
+        const [latest, all] = await Promise.all([
+          client.fetch(queryLatest),
+          client.fetch(queryAll)
+        ]);
+
+        setLatestWork(latest);
+        setAllWorks(all);
       } catch (error) {
         console.error("Gagal mengambil data dari Sanity:", error);
       }
     };
 
-    fetchLatestWork();
+    fetchData();
   }, []);
+
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
 
@@ -83,24 +98,48 @@ export default function Home() {
     }
   };
 
+  // 1. FILTERING: Hanya ambil data yang memiliki imageUrl (punya thumbnail/gambar asli)
+  const validWorks = allWorks.filter((item) => item.imageUrl);
+
   return (
     <main className="min-h-screen bg-black font-sans">
 
-      {/* PENAMBAHAN: CSS KHUSUS UNTUK ANIMASI MARQUEE RUNNING TEXT */}
+      {/* CSS KHUSUS ANIMASI MARQUEE & SLIDER */}
       <style dangerouslySetInnerHTML={{
         __html: `
         @keyframes marquee {
           0% { transform: translateX(0%); }
           100% { transform: translateX(-50%); }
         }
+        @keyframes slide-left {
+          0% { transform: translateX(0%); }
+          100% { transform: translateX(-50%); }
+        }
+        @keyframes slide-right {
+          0% { transform: translateX(-50%); }
+          100% { transform: translateX(0%); }
+        }
         .animate-marquee {
           display: inline-block;
           white-space: nowrap;
           animation: marquee 20s linear infinite;
         }
+        .animate-slide-left {
+          display: flex;
+          width: max-content;
+          animation: slide-left 35s linear infinite;
+        }
+        .animate-slide-right {
+          display: flex;
+          width: max-content;
+          animation: slide-right 35s linear infinite;
+        }
+        .animate-slide-left:hover, .animate-slide-right:hover {
+          animation-play-state: paused;
+        }
       `}} />
 
-      {/* 1. HERO SECTION (ASLI) */}
+      {/* 1. HERO SECTION */}
       <section className="relative h-screen w-full flex items-center justify-center overflow-hidden px-4">
         <div className="absolute z-0 w-full max-w-4xl h-[50vh] md:h-[65vh] overflow-hidden opacity-50 rounded-lg">
           <video autoPlay loop muted playsInline className="w-full h-full object-cover">
@@ -122,7 +161,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 2. TENTANG SECTION (ASLI) */}
+      {/* 2. TENTANG SECTION */}
       <section className="w-full bg-white text-black py-16 md:py-24 px-6 md:px-12 relative z-20 flex flex-col items-center">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full mb-12 md:mb-16">
           <div className="lg:col-span-5 flex flex-col items-center text-center gsap-fade-up">
@@ -160,7 +199,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. LAYANAN KAMI SECTION (ASLI) */}
+      {/* 3. LAYANAN KAMI SECTION */}
       <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="gsap-fade-up flex flex-col items-end text-right w-full mb-16">
           <h3 className="text-3xl md:text-5xl font-black uppercase tracking-wider mb-4 text-[#c8a15e]">
@@ -231,7 +270,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. SNEAK PEEK / BENTO BOX - (SECTION BARU) */}
+      {/* 4. SNEAK PEEK / BENTO BOX */}
       <section className="py-16 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="text-center mb-12 gsap-fade-up">
           <h2 className="text-3xl md:text-5xl font-black uppercase tracking-wider text-[#c8a15e]">Karya Terbaru</h2>
@@ -250,7 +289,6 @@ export default function Home() {
           <div className="md:col-span-4 bg-[#c8a15e] rounded-3xl overflow-hidden relative p-8 flex flex-col justify-between group">
             {latestWork ? (
               <>
-                {/* Background image dari Sanity (Jika diunggah) */}
                 {latestWork.imageUrl && (
                   <Image
                     src={latestWork.imageUrl}
@@ -259,20 +297,17 @@ export default function Home() {
                     className="object-cover opacity-20 group-hover:scale-105 group-hover:opacity-40 transition-all duration-700 z-0"
                   />
                 )}
-
                 <div className="relative z-10">
                   <span className="text-black font-black uppercase text-xs tracking-widest border border-black/20 px-3 py-1 rounded-full">Terbaru</span>
                   <h3 className="text-2xl font-black text-black mt-4">
                     {latestWork.title || "Karya Tanpa Judul"}
                   </h3>
                 </div>
-
                 <Link href={`/${latestWork._type}`} className="relative z-10 w-12 h-12 bg-black rounded-full flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                   ↗
                 </Link>
               </>
             ) : (
-              // Loading state saat data sedang ditarik
               <div className="flex items-center justify-center h-full text-black/50 font-bold">
                 Memuat...
               </div>
@@ -282,8 +317,61 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 6. RUNNING TEXT (MARQUEE) - (SECTION BARU) */}
-      <section className="w-full py-6 md:py-8 bg-[#c8a15e] text-black overflow-hidden border-y-4 border-white my-10">
+      {/* 5. OUR WORK SLIDER */}
+      <section className="py-20 overflow-hidden relative border-t border-white/5">
+        <div className="px-6 md:px-12 max-w-7xl mx-auto mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 gsap-fade-up">
+          <div>
+            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-wider text-[#c8a15e]">Galeri</h2>
+            <p className="text-neutral-400 text-sm mt-2">Kompilasi dokumentasi visual dan audio terbaru kami.</p>
+          </div>
+          <Link href="/visual" className="px-8 py-3 bg-white text-black rounded-full font-bold text-sm hover:bg-[#c8a15e] transition-colors w-max">
+            See Details 
+          </Link>
+        </div>
+
+        {validWorks.length > 0 ? (
+          <div className="flex flex-col gap-4 mt-12 w-full">
+            
+            {/* Baris Atas (Jalan ke Kiri, Menggunakan semua karya) */}
+            <div className="w-full overflow-hidden flex">
+              <div className="animate-slide-left gap-4">
+                {[...validWorks, ...validWorks, ...validWorks].map((item, index) => (
+                  <div key={`top-${index}`} className="w-[280px] h-[280px] md:w-[350px] md:h-[350px] shrink-0 relative overflow-hidden group bg-neutral-900">
+                    <Image 
+                      src={item.imageUrl}
+                      alt={item.title} 
+                      fill 
+                      className="object-cover grayscale hover:grayscale-0 transition-all duration-500 hover:scale-110 cursor-pointer"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Baris Bawah (Jalan ke Kanan, Menggunakan semua karya yang sama) */}
+            <div className="w-full overflow-hidden flex">
+              <div className="animate-slide-right gap-4">
+                {[...validWorks, ...validWorks, ...validWorks].map((item, index) => (
+                  <div key={`bottom-${index}`} className="w-[280px] h-[280px] md:w-[350px] md:h-[350px] shrink-0 relative overflow-hidden group bg-neutral-900">
+                    <Image 
+                      src={item.imageUrl}
+                      alt={item.title} 
+                      fill 
+                      className="object-cover grayscale hover:grayscale-0 transition-all duration-500 hover:scale-110 cursor-pointer"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        ) : (
+          <p className="text-center text-neutral-500 text-sm italic py-10">Memuat katalog...</p>
+        )}
+      </section>
+
+      {/* 6. RUNNING TEXT (MARQUEE) */}
+      {/* <section className="w-full py-6 md:py-8 bg-[#c8a15e] text-black overflow-hidden border-y-4 border-white my-10">
         <div className="w-full overflow-hidden flex">
           <div className="animate-marquee flex items-center gap-8 md:gap-12">
             {[...Array(2)].map((_, i) => (
@@ -300,9 +388,9 @@ export default function Home() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
 
-      {/* 7. MARI BERKOLABORASI SECTION (ASLI) */}
+      {/* 7. MARI BERKOLABORASI SECTION */}
       <section className="py-10 px-6 md:px-12 max-w-5xl mx-auto mb-10">
         <div className="gsap-fade-up bg-neutral-900/60 border border-white/5 p-8 md:p-16 rounded-[2.5rem] text-center hover:border-[#C5A880]/30 transition-all duration-700 relative overflow-hidden">
           {/* Latar Belakang Dekoratif CTA */}

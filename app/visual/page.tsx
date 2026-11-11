@@ -11,6 +11,7 @@ async function getVisualKatalog() {
     type,
     "coverImageUrl": coverImage.asset->url,
     youtubeUrl,
+    "videoUploadUrl": videoUpload.asset->url, // Tambahkan baris ini
     description
   }`;
 
