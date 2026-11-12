@@ -8,15 +8,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { client } from "@/sanity/lib/client";
 
 export default function Home() {
-  // 1. State untuk Sneak Peek (1 karya) dan Galeri Berjalan (Semua Karya)
   const [latestWork, setLatestWork] = useState<any>(null);
   const [allWorks, setAllWorks] = useState<any[]>([]);
 
-  // 2. Fetcher Sanity
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Mengambil 1 data paling baru untuk Sneak Peek
         const queryLatest = `*[_type in ["audio", "visual"]] | order(_createdAt desc)[0] {
           _id,
           _type,
@@ -24,7 +21,6 @@ export default function Home() {
           "imageUrl": coverImage.asset->url
         }`;
         
-        // Mengambil 16 data terbaru untuk Galeri Berjalan
         const queryAll = `*[_type in ["audio", "visual"]] | order(_createdAt desc)[0...16] {
           _id,
           _type,
@@ -83,28 +79,10 @@ export default function Home() {
     video.muted = !video.muted;
   };
 
-  const togglePiP = async (videoId: string) => {
-    const video = document.getElementById(videoId) as HTMLVideoElement;
-    if (!video) return;
-
-    try {
-      if (document.pictureInPictureElement) {
-        await document.exitPictureInPicture();
-      } else if (document.pictureInPictureEnabled) {
-        await video.requestPictureInPicture();
-      }
-    } catch (error) {
-      console.error("Gagal membuka Picture-in-Picture:", error);
-    }
-  };
-
-  // 1. FILTERING: Hanya ambil data yang memiliki imageUrl (punya thumbnail/gambar asli)
   const validWorks = allWorks.filter((item) => item.imageUrl);
 
   return (
     <main className="min-h-screen bg-black font-sans">
-
-      {/* CSS KHUSUS ANIMASI MARQUEE & SLIDER */}
       <style dangerouslySetInnerHTML={{
         __html: `
         @keyframes marquee {
@@ -141,7 +119,7 @@ export default function Home() {
 
       {/* 1. HERO SECTION */}
       <section className="relative h-screen w-full flex items-center justify-center overflow-hidden px-4">
-        <div className="absolute z-0 w-full max-w-4xl h-[50vh] md:h-[65vh] overflow-hidden opacity-50 rounded-lg">
+        <div className="absolute z-0 w-full max-w-4xl h-[50vh] md:h-[65vh] overflow-hidden opacity-50">
           <video autoPlay loop muted playsInline className="w-full h-full object-cover">
             <source src="/videos/renjana-video.mp4" type="video/mp4" />
           </video>
@@ -168,7 +146,7 @@ export default function Home() {
             <h3 className="text-3xl md:text-5xl font-black uppercase tracking-widest text-neutral-900 leading-tight mb-6 whitespace-nowrap">
               TENTANG
             </h3>
-            <div className="relative w-40 md:w-48 aspect-square overflow-hidden rounded-xl bg-neutral-100 border border-neutral-200">
+            <div className="relative w-40 md:w-48 aspect-square overflow-hidden bg-neutral-100 border border-neutral-200">
               <Image src="/images/renjana-logo.jpg" alt="Renjana Studio Profile" fill className="object-cover hover:scale-105 transition-transform duration-700" />
             </div>
           </div>
@@ -180,13 +158,13 @@ export default function Home() {
               Di lini visual, kami mengeksekusi produksi foto dan <i>editing</i> baik itu foto wisuda, foto pre-wedding, foto brand, dan juga desain, tak hanya itu kami juga melayani produksi video, meliputi video musik, konten kreatif, dan berbagai medium visual lainnya. Lebih dari sekadar studio, Renjana juga menghadirkan identitas gaya melalui karya desain dan lini <i>merchandise</i> eksklusif kami.
             </p>
             <div className="flex flex-wrap sm:flex-nowrap items-center gap-3 w-full">
-              <Link href="https://www.instagram.com/renjana_renjana/" target="_blank" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-full border border-black/20 hover:bg-black hover:text-white transition-all duration-300 text-xs font-bold text-neutral-800 uppercase tracking-wider truncate">
+              <Link href="https://www.instagram.com/renjana_renjana/" target="_blank" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 border border-black/20 hover:bg-black hover:text-white transition-all duration-300 text-xs font-bold text-neutral-800 uppercase tracking-wider truncate">
                 <span className="truncate">@renjana</span>
               </Link>
-              <Link href="https://www.instagram.com/jefrylamariang_/" target="_blank" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-full border border-black/20 hover:bg-black hover:text-white transition-all duration-300 text-xs font-bold text-neutral-800 uppercase tracking-wider truncate">
+              <Link href="https://www.instagram.com/jefrylamariang_/" target="_blank" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 border border-black/20 hover:bg-black hover:text-white transition-all duration-300 text-xs font-bold text-neutral-800 uppercase tracking-wider truncate">
                 <span className="truncate">@jefrylamariang_</span>
               </Link>
-              <Link href="https://www.youtube.com/@RENJANA1402" target="_blank" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-full border border-black/20 hover:bg-black hover:text-white transition-all duration-300 text-xs font-bold text-neutral-800 uppercase tracking-wider truncate">
+              <Link href="https://www.youtube.com/@RENJANA1402" target="_blank" className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 border border-black/20 hover:bg-black hover:text-white transition-all duration-300 text-xs font-bold text-neutral-800 uppercase tracking-wider truncate">
                 <span className="truncate">RENJANA</span>
               </Link>
             </div>
@@ -199,94 +177,122 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 3. LAYANAN KAMI SECTION */}
-      <section className="py-24 px-6 md:px-12 max-w-7xl mx-auto">
-        <div className="gsap-fade-up flex flex-col items-end text-right w-full mb-16">
-          <h3 className="text-3xl md:text-5xl font-black uppercase tracking-wider mb-4 text-[#c8a15e]">
-            Layanan Kami
-          </h3>
-          <p className="text-white/80 max-w-xl text-sm md:text-base leading-relaxed">
-            Dedikasi kami terbagi dalam industri kreatif.
-          </p>
+      {/* 3. LAYANAN KAMI SECTION (Visual & Teks Overlay) */}
+      <section className="pt-24 pb-8 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="gsap-fade-up mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <h3 className="text-3xl md:text-5xl font-black uppercase tracking-wider mb-4 text-[#c8a15e]">
+              Layanan Kami
+            </h3>
+            <p className="text-white/80 text-sm md:text-base max-w-2xl leading-relaxed">
+              Jelajahi berbagai dedikasi karya kami yang mendemonstrasikan komitmen pada estetika, inovasi, dan kualitas.
+            </p>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* MUSIC PRODUCTION */}
-          <div className="gsap-fade-up bg-[#0a0a0a] border border-white/5 p-8 rounded-2xl hover:border-[#C5A880]/30 transition-colors duration-500 flex flex-col">
-            <h4 className="text-xl font-bold uppercase tracking-wider mb-3 text-white">Music Production</h4>
-            <p className="text-neutral-400 text-sm leading-relaxed mb-6 flex-grow">
-              Pembuatan lagu, beat, recording, hingga proses mixing untuk memperkuat emosi dan nyawa dari setiap karya suara.
-            </p>
-            <div className="w-full aspect-video bg-neutral-900 rounded-xl overflow-hidden border border-white/5 relative mb-6 group">
-              <video id="video-music" autoPlay loop muted playsInline onClick={toggleMute} title="Klik untuk menyalakan/mematikan suara" className="w-full h-full object-cover cursor-pointer">
-                <source src="/videos/musik1.mp4" type="video/mp4" />
-              </video>
-              <button onClick={() => togglePiP("video-music")} className="absolute top-3 right-3 bg-black/70 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-md border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 hover:bg-[#c8a15e] hover:text-black" title="Putar Melayang (Picture-in-Picture)">
-                Zoom
-              </button>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8">
+          {/* KOLOM KIRI: Music Production */}
+          <div className="gsap-fade-up relative w-full h-[500px] xl:h-[650px] overflow-hidden bg-neutral-900 group">
+            <video autoPlay loop muted playsInline onClick={toggleMute} title="Klik untuk suara" className="absolute inset-0 w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-700">
+              <source src="/videos/musik1.mp4" type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute bottom-8 left-6 right-6 pointer-events-none">
+              <h4 className="text-2xl font-black uppercase tracking-widest text-white drop-shadow-md">Music Production</h4>
             </div>
-            <Link href="/audio" className="mt-auto block w-full py-3.5 text-center bg-white/5 border border-white/10 text-white font-medium text-sm rounded-full hover:bg-[#C5A880] hover:text-black hover:border-[#C5A880] transition-all duration-300">
-              Jelajahi Musik
-            </Link>
           </div>
 
-          {/* VIDEO & VISUAL */}
-          <div className="gsap-fade-up bg-[#0a0a0a] border border-white/5 p-8 rounded-2xl hover:border-[#C5A880]/30 transition-colors duration-500 flex flex-col">
-            <h4 className="text-xl font-bold uppercase tracking-wider mb-3 text-white">Video & Visual</h4>
-            <p className="text-neutral-400 text-sm leading-relaxed mb-6 flex-grow">
-              Editing foto, pembuatan video musik, hingga konten kreatif. Kami merangkai momen menjadi cerita yang hidup.
-            </p>
-            <div className="w-full aspect-video bg-neutral-900 rounded-xl overflow-hidden border border-white/5 relative mb-6 group">
-              <video id="video-visual" autoPlay loop muted playsInline onClick={toggleMute} title="Klik untuk menyalakan/mematikan suara" className="w-full h-full object-cover cursor-pointer">
-                <source src="/videos/video1.mp4" type="video/mp4" />
-              </video>
-              <button onClick={() => togglePiP("video-visual")} className="absolute top-3 right-3 bg-black/70 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-md border border-white/10 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 hover:bg-[#c8a15e] hover:text-black" title="Putar Melayang (Picture-in-Picture)">
-                Zoom
-              </button>
+          {/* KOLOM TENGAH: Design & Merchandise */}
+          <div className="flex flex-col gap-6 md:gap-8 h-[500px] xl:h-[650px]">
+            {/* Design */}
+            <div className="gsap-fade-up relative flex-1 w-full overflow-hidden bg-neutral-900 group">
+              <Image src="/images/baju1.jpg" alt="Design" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
+                <h4 className="text-xl font-black uppercase tracking-widest text-white drop-shadow-md">Design</h4>
+              </div>
             </div>
-            <Link href="/visual" className="mt-auto block w-full py-3.5 text-center bg-white/5 border border-white/10 text-white font-medium text-sm rounded-full hover:bg-[#C5A880] hover:text-black hover:border-[#C5A880] transition-all duration-300">
-              Lihat Karya Visual
-            </Link>
+
+            {/* Merchandise */}
+            <div className="gsap-fade-up relative flex-1 w-full overflow-hidden bg-neutral-900 group">
+              <Image src="/images/baju2.jpg" alt="Merchandise" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+              <div className="absolute bottom-6 left-6 right-6 pointer-events-none">
+                <h4 className="text-xl font-black uppercase tracking-widest text-white drop-shadow-md">Merchandise</h4>
+              </div>
+            </div>
           </div>
 
-          {/* MERCHANDISE */}
-          <div className="gsap-fade-up bg-[#0a0a0a] border border-white/5 p-8 rounded-2xl hover:border-[#C5A880]/30 transition-colors duration-500 flex flex-col">
-            <h4 className="text-xl font-bold uppercase tracking-wider mb-3 text-white">Merchandise</h4>
-            <p className="text-neutral-400 text-sm leading-relaxed mb-6 flex-grow">
-              Desain katalog dan produk eksklusif yang merepresentasikan identitas gaya Renjana.
-            </p>
-            <div className="w-full aspect-video rounded-xl relative group mb-6">
-              <div className="absolute top-0 right-0 w-[70%] h-[90%] rounded-xl overflow-hidden border border-white/10 z-0 group-hover:-translate-y-2 group-hover:translate-x-2 transition-transform duration-500">
-                <Image src="/images/baju2.jpg" alt="Baju 2" fill className="object-cover" />
-              </div>
-              <div className="absolute bottom-0 left-0 w-[75%] h-[90%] rounded-xl overflow-hidden border-2 border-[#0a0a0a] z-10 shadow-2xl group-hover:translate-y-2 group-hover:-translate-x-2 transition-transform duration-500">
-                <Image src="/images/baju1.jpg" alt="Baju 1" fill className="object-cover" />
-              </div>
+          {/* KOLOM KANAN: Video & Visual */}
+          <div className="gsap-fade-up relative w-full h-[500px] xl:h-[650px] overflow-hidden bg-neutral-900 group">
+            <video autoPlay loop muted playsInline onClick={toggleMute} title="Klik untuk suara" className="absolute inset-0 w-full h-full object-cover cursor-pointer group-hover:scale-105 transition-transform duration-700">
+              <source src="/videos/video1.mp4" type="video/mp4" />
+            </video>
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none opacity-80 group-hover:opacity-100 transition-opacity duration-500"></div>
+            <div className="absolute bottom-8 left-6 right-6 pointer-events-none">
+              <h4 className="text-2xl font-black uppercase tracking-widest text-white drop-shadow-md">Video & Visual</h4>
             </div>
-            <Link href="/merchandise" className="mt-auto block w-full py-3.5 text-center bg-white/5 border border-white/10 text-white font-medium text-sm rounded-full hover:bg-[#C5A880] hover:text-black hover:border-[#C5A880] transition-all duration-300">
-              Katalog Merchandise
-            </Link>
           </div>
         </div>
       </section>
 
-      {/* 4. SNEAK PEEK / BENTO BOX */}
-      <section className="py-16 px-6 md:px-12 max-w-7xl mx-auto">
+      {/* 3.5 RANGKUMAN LAYANAN (CARD PENJELASAN) */}
+      <section className="pb-24 px-4 md:px-8 max-w-[1400px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          
+          {/* Card Music */}
+          <div className="gsap-fade-up bg-white/5 border border-white/10 p-8 hover:bg-white/10 transition-colors duration-300 flex flex-col">
+            <h4 className="text-xl font-bold uppercase tracking-wider mb-4 text-[#c8a15e]">Music Production</h4>
+            <p className="text-neutral-400 text-sm leading-relaxed mb-8 flex-grow">
+              Pembuatan lagu, beat, recording, hingga proses mixing. Pengalaman audio yang dirancang khusus untuk memperkuat pesan dan emosi.
+            </p>
+            <Link href="/audio" className="w-max text-white font-bold text-sm hover:text-[#c8a15e] transition-colors duration-300 flex items-center gap-2">
+              JELAJAHI MUSIK 
+            </Link>
+          </div>
+
+          {/* Card Design & Merch */}
+          <div className="gsap-fade-up bg-white/5 border border-white/10 p-8 hover:bg-white/10 transition-colors duration-300 flex flex-col">
+            <h4 className="text-xl font-bold uppercase tracking-wider mb-4 text-[#c8a15e]">Design & Merchandise</h4>
+            <p className="text-neutral-400 text-sm leading-relaxed mb-8 flex-grow">
+              Identitas gaya dan statement pelengkap dari katalog kami. Eksklusif T-Shirt dan aksesoris dengan desain visual khas Renjana.
+            </p>
+            <Link href="/merchandise" className="w-max text-white font-bold text-sm hover:text-[#c8a15e] transition-colors duration-300 flex items-center gap-2">
+              KATALOG MERCH
+            </Link>
+          </div>
+
+          {/* Card Visual */}
+          <div className="gsap-fade-up bg-white/5 border border-white/10 p-8 hover:bg-white/10 transition-colors duration-300 flex flex-col">
+            <h4 className="text-xl font-bold uppercase tracking-wider mb-4 text-[#c8a15e]">Video & Visual</h4>
+            <p className="text-neutral-400 text-sm leading-relaxed mb-8 flex-grow">
+              Editing foto, pembuatan video musik, hingga konten kreatif. Kami merangkai momen menjadi cerita yang hidup dengan sinematografi tajam.
+            </p>
+            <Link href="/visual" className="w-max text-white font-bold text-sm hover:text-[#c8a15e] transition-colors duration-300 flex items-center gap-2">
+              LIHAT KARYA VISUAL
+            </Link>
+          </div>
+
+        </div>
+      </section>
+
+      {/* 4. SNEAK PEEK / KARYA TERBARU */}
+      <section className="py-16 px-4 md:px-8 max-w-[1400px] mx-auto">
         <div className="text-center mb-12 gsap-fade-up">
           <h2 className="text-3xl md:text-5xl font-black uppercase tracking-wider text-[#c8a15e]">Karya Terbaru</h2>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 auto-rows-[250px] gsap-fade-up">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 auto-rows-[300px] md:auto-rows-[400px] gsap-fade-up">
 
-          {/* BOX KIRI (STATIS) - Ruang Kreatif Kami */}
-          <div className="md:col-span-8 bg-[#0a0a0a] rounded-3xl overflow-hidden relative group border border-white/5">
+          {/* BOX KIRI (STATIS) */}
+          <div className="md:col-span-8 bg-[#0a0a0a] overflow-hidden relative group border border-white/10">
             <Image src="/images/renjana-logo.jpg" alt="Studio" fill className="object-cover opacity-30 group-hover:scale-105 group-hover:opacity-50 transition-all duration-700" />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent flex items-end p-8">
               <h3 className="text-2xl font-bold text-white relative z-10">Ruang Kreatif Kami</h3>
             </div>
           </div>
 
-          {/* BOX KANAN (DINAMIS) - 1 Karya Terbaru dari Sanity */}
-          <div className="md:col-span-4 bg-[#c8a15e] rounded-3xl overflow-hidden relative p-8 flex flex-col justify-between group">
+          {/* BOX KANAN (DINAMIS) */}
+          <div className="md:col-span-4 bg-[#c8a15e] overflow-hidden relative p-8 flex flex-col justify-between group">
             {latestWork ? (
               <>
                 {latestWork.imageUrl && (
@@ -298,12 +304,12 @@ export default function Home() {
                   />
                 )}
                 <div className="relative z-10">
-                  <span className="text-black font-black uppercase text-xs tracking-widest border border-black/20 px-3 py-1 rounded-full">Terbaru</span>
+                  <span className="text-black font-black uppercase text-xs tracking-widest border border-black/20 px-3 py-1">Terbaru</span>
                   <h3 className="text-2xl font-black text-black mt-4">
                     {latestWork.title || "Karya Tanpa Judul"}
                   </h3>
                 </div>
-                <Link href={`/${latestWork._type}`} className="relative z-10 w-12 h-12 bg-black rounded-full flex items-center justify-center text-white group-hover:scale-110 transition-transform">
+                <Link href={`/${latestWork._type}`} className="relative z-10 w-12 h-12 bg-black flex items-center justify-center text-white group-hover:scale-110 transition-transform">
                   ↗
                 </Link>
               </>
@@ -318,21 +324,19 @@ export default function Home() {
       </section>
 
       {/* 5. OUR WORK SLIDER */}
-      <section className="py-20 overflow-hidden relative border-t border-white/5">
-        <div className="px-6 md:px-12 max-w-7xl mx-auto mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 gsap-fade-up">
+      <section className="py-20 overflow-hidden relative border-t border-white/10">
+        <div className="px-6 md:px-12 max-w-[1400px] mx-auto mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6 gsap-fade-up">
           <div>
             <h2 className="text-3xl md:text-5xl font-black uppercase tracking-wider text-[#c8a15e]">Galeri</h2>
             <p className="text-neutral-400 text-sm mt-2">Kompilasi dokumentasi visual dan audio terbaru kami.</p>
           </div>
-          <Link href="/visual" className="px-8 py-3 bg-white text-black rounded-full font-bold text-sm hover:bg-[#c8a15e] transition-colors w-max">
+          <Link href="/visual" className="px-8 py-3 bg-white text-black font-bold text-sm hover:bg-[#c8a15e] transition-colors w-max">
             See Details 
           </Link>
         </div>
 
         {validWorks.length > 0 ? (
           <div className="flex flex-col gap-4 mt-12 w-full">
-            
-            {/* Baris Atas (Jalan ke Kiri, Menggunakan semua karya) */}
             <div className="w-full overflow-hidden flex">
               <div className="animate-slide-left gap-4">
                 {[...validWorks, ...validWorks, ...validWorks].map((item, index) => (
@@ -347,8 +351,6 @@ export default function Home() {
                 ))}
               </div>
             </div>
-
-            {/* Baris Bawah (Jalan ke Kanan, Menggunakan semua karya yang sama) */}
             <div className="w-full overflow-hidden flex">
               <div className="animate-slide-right gap-4">
                 {[...validWorks, ...validWorks, ...validWorks].map((item, index) => (
@@ -363,60 +365,37 @@ export default function Home() {
                 ))}
               </div>
             </div>
-
           </div>
         ) : (
           <p className="text-center text-neutral-500 text-sm italic py-10">Memuat katalog...</p>
         )}
       </section>
 
-      {/* 6. RUNNING TEXT (MARQUEE) */}
-      {/* <section className="w-full py-6 md:py-8 bg-[#c8a15e] text-black overflow-hidden border-y-4 border-white my-10">
-        <div className="w-full overflow-hidden flex">
-          <div className="animate-marquee flex items-center gap-8 md:gap-12">
-            {[...Array(2)].map((_, i) => (
-              <div key={i} className="flex items-center gap-8 md:gap-12 shrink-0">
-                <span className="text-3xl md:text-5xl font-black uppercase tracking-widest">Music Production</span>
-                <span className="text-3xl md:text-5xl">✦</span>
-                <span className="text-3xl md:text-5xl font-black uppercase tracking-widest outline-text opacity-70">Visual Arts</span>
-                <span className="text-3xl md:text-5xl">✦</span>
-                <span className="text-3xl md:text-5xl font-black uppercase tracking-widest">Exclusive Merchandise</span>
-                <span className="text-3xl md:text-5xl">✦</span>
-                <span className="text-3xl md:text-5xl font-black uppercase tracking-widest outline-text opacity-70">Creative Studio</span>
-                <span className="text-3xl md:text-5xl">✦</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
-      {/* 7. MARI BERKOLABORASI SECTION */}
+      {/* SECTION CALL TO ACTION */}
       <section className="py-10 px-6 md:px-12 max-w-5xl mx-auto mb-10">
-        <div className="gsap-fade-up bg-neutral-900/60 border border-white/5 p-8 md:p-16 rounded-[2.5rem] text-center hover:border-[#C5A880]/30 transition-all duration-700 relative overflow-hidden">
-          {/* Latar Belakang Dekoratif CTA */}
+        <div className="gsap-fade bg-neutral-900/60 border border-white/5 p-8 md:p-16 rounded-[2.5rem] text-center hover:border-[#C5A880]/30 transition-all duration-700 relative overflow-hidden mt-10">
           <div className="absolute -top-32 -left-32 w-64 h-64 bg-[#c8a15e]/10 rounded-full blur-3xl pointer-events-none"></div>
           <div className="absolute -bottom-32 -right-32 w-64 h-64 bg-[#c8a15e]/10 rounded-full blur-3xl pointer-events-none"></div>
 
           <div className="relative z-10">
-            <h3 className="text-3xl md:text-5xl font-black uppercase tracking-wider mb-6 text-[#c8a15e]">
-              Mari Berkolaborasi
-            </h3>
+            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-wider mb-6 text-[#c8a15e]">
+              Mari Utarakan Ide Anda
+            </h2>
             <p className="text-neutral-400 max-w-2xl mx-auto text-sm md:text-base leading-relaxed mb-10">
               Kami selalu terbuka untuk merespons ide kreatif Anda. Mari duduk bersama berdiskusi dan wujudkan karya nyata bersama Renjana Studio.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full">
-              <Link href="https://wa.me/6285259380736" target="_blank" className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-[#c8a15e] text-black rounded-full font-bold uppercase tracking-wider text-sm hover:bg-white transition-all duration-300 shadow-lg shadow-[#c8a15e]/20">
-                Chat via WA
-              </Link>
-              <Link href="mailto:renjanahouse1@gmail.com" className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-white/5 border border-white/20 text-white rounded-full font-bold uppercase tracking-wider text-sm hover:bg-white hover:text-black transition-all duration-300">
-                Kirim Email
+              <Link 
+                href="/kontak" 
+                className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-[#c8a15e] text-black rounded-full font-bold uppercase tracking-wider text-sm hover:bg-white transition-all duration-300 shadow-lg shadow-[#c8a15e]/20"
+              >
+                Hubungi Kami
               </Link>
             </div>
           </div>
         </div>
       </section>
-
     </main>
   );
 }
