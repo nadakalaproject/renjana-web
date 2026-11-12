@@ -20,6 +20,10 @@ export default function Navbar() {
       document.body.style.overflow = "unset";
     };
   }, [isOpen]);
+  
+  if (pathname?.startsWith("/studio")) {
+    return null;
+  }
 
   const navLinks = [
     { name: "Home", href: "/" },
