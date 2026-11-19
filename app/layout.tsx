@@ -17,8 +17,32 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "Renjana Studio",
-  description: "Music, Video, and Apparel by Renjana",
+  title: {
+    default: "Renjana Studio | Music, Visual, and Apparel",
+    template: "%s | Renjana Studio" 
+  },
+  description: "Renjana Studio melayani jasa profesional untuk music producer, mixing, beat making, fotografi (termasuk foto outdoor), video making, hingga video editor. Temukan karya audio, visual, dan merchandise terbaik kami.",
+  keywords: [
+    "musik produser", 
+    "mixing", 
+    "mastering", 
+    "beat maker", 
+    "fotografi", 
+    "foto outdoor", 
+    "video making", 
+    "video editor", 
+    "renjana studio",
+    "jasa video",
+    "jasa audio"
+  ],
+  openGraph: {
+    title: "Renjana Studio | Creative House",
+    description: "Melayani jasa music producer, mixing, fotografi, foto outdoor, dan video making profesional.",
+    url: "https://renjanastudio.com",
+    siteName: "Renjana Studio",
+    locale: "id_ID",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
