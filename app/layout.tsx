@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import { Playfair_Display, Montserrat } from "next/font/google";
-import { Suspense } from "react"; 
+import { Suspense } from "react";
 import "./globals.css";
 import SmoothScroll from "../components/SmoothScroll";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
-const playfair = Playfair_Display({ 
+const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
 });
 
-const montserrat = Montserrat({ 
+const montserrat = Montserrat({
   subsets: ["latin"],
   variable: "--font-montserrat",
 });
@@ -23,27 +23,23 @@ export const metadata: Metadata = {
   },
   description: "Renjana Studio melayani jasa profesional untuk music producer, mixing, beat making, fotografi (termasuk foto outdoor), video making, hingga video editor. Temukan karya audio, visual, dan merchandise terbaik kami.",
   keywords: [
-    "musik produser", 
-    "mixing", 
-    "mastering", 
-    "beat maker", 
-    "fotografi", 
-    "foto outdoor", 
-    "video making", 
-    "video editor", 
+    "musik produser",
+    "mixing",
+    "mastering",
+    "beat maker",
+    "fotografi",
+    "foto outdoor",
+    "video making",
+    "video editor",
     "renjana studio",
     "jasa video",
     "jasa audio"
   ],
-  icons: {
-    icon: "/images/renjana-logo.jpg",
-    shortcut: "/images/renjana-logo.jpg",
-    apple: "/images/renjana-logo.jpg",
-  },
+  metadataBase: new URL("https://www.renjanastudio.com"),
   openGraph: {
     title: "Renjana Studio | Creative House",
     description: "Melayani jasa music producer, mixing, fotografi, foto outdoor, dan video making profesional.",
-    url: "https://renjanastudio.com",
+    url: "https://www.renjanastudio.com",
     siteName: "Renjana Studio",
     locale: "id_ID",
     type: "website",
