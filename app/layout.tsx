@@ -19,9 +19,10 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: {
     default: "Renjana Studio | Music, Visual, and Apparel",
-    template: "%s | Renjana Studio"
+    template: "%s | Renjana Studio",
   },
-  description: "Renjana Studio melayani jasa profesional untuk music producer, mixing, beat making, fotografi (termasuk foto outdoor), video making, hingga video editor. Temukan karya audio, visual, dan merchandise terbaik kami.",
+  description:
+    "Renjana Studio melayani jasa profesional untuk music producer, mixing, beat making, fotografi (termasuk foto outdoor), video making, hingga video editor. Temukan karya audio, visual, dan merchandise terbaik kami.",
   keywords: [
     "musik produser",
     "mixing",
@@ -33,16 +34,32 @@ export const metadata: Metadata = {
     "video editor",
     "renjana studio",
     "jasa video",
-    "jasa audio"
+    "jasa audio",
   ],
   metadataBase: new URL("https://www.renjanastudio.com"),
+  icons: {
+    icon: [
+      { url: "/renjana-favicon.png?v=2", type: "image/png", sizes: "192x192" },
+    ],
+    shortcut: "/renjana-favicon.png?v=2",
+    apple: "/renjana-favicon.png?v=2",
+  },
   openGraph: {
     title: "Renjana Studio | Creative House",
-    description: "Melayani jasa music producer, mixing, fotografi, foto outdoor, dan video making profesional.",
+    description:
+      "Melayani jasa music producer, mixing, fotografi, foto outdoor, dan video making profesional.",
     url: "https://www.renjanastudio.com",
     siteName: "Renjana Studio",
     locale: "id_ID",
     type: "website",
+    images: [
+      {
+        url: "/images/renjana-logo.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Renjana Studio",
+      },
+    ],
   },
 };
 
@@ -53,7 +70,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id">
-      <body className={`${montserrat.variable} ${playfair.variable} font-sans bg-black text-white antialiased`}>
+      <body
+        className={`${montserrat.variable} ${playfair.variable} font-sans bg-black text-white antialiased`}
+      >
         {/* 2. Bungkus SmoothScroll dengan Suspense agar usePathname diizinkan Next.js 16 */}
         <Suspense fallback={null}>
           <SmoothScroll>
